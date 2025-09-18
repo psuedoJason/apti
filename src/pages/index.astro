@@ -1,7 +1,10 @@
 ---
 // Component Imports
 import Counter from '../components/Counter';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
+import "../styles/global.css";
 const someProps = {
 	count: 0,
 };
@@ -17,21 +20,19 @@ const someProps = {
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<style>
-			html,
 			body {
-				font-family: system-ui;
-				margin: 0;
-			}
-			body {
-				padding: 2rem;
+				background-color: var(--color-background);
+				color: var(--color-foreground);
 			}
 		</style>
 	</head>
 	<body>
+		<Header />
 		<main>
 			<Counter {...someProps} client:visible>
 				<h1>Hello, React!</h1>
 			</Counter>
 		</main>
+		<Footer />
 	</body>
 </html>
