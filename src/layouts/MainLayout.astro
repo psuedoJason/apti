@@ -1,0 +1,18 @@
+---
+// MainLayout.astro: Astro layout for header, sidebar, and main content
+---
+
+<div class="layout">
+  <header class="header">
+    <slot name="header" />
+  </header>
+  <aside class="sidebar">
+    <slot name="sidebar" />
+  </aside>
+  <main class="main">
+    <slot name="content"/>
+  </main>
+  <footer class="footer">
+    <slot name="footer" />
+  </footer>
+</div>
