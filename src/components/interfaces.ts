@@ -3,10 +3,10 @@ export interface FranchiseInterface {
   Description: string;
   Movies: {
     Year: number;
-    MovieTitle: string;
+    MovieTitle?: string;
     Ryan: number;
     Josh: number;
-    Avg: number;
+    Avg?: number;
     RyanMult: number;
     JoshMult: number;
   }[];

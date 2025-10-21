@@ -1,4 +1,13 @@
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ReferenceDot,
+} from "recharts";
+import { useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -81,7 +90,7 @@ function calculateRatings(data: FranchiseInterface["Movies"]) {
   addRatings(data, ratings, "Ryan");
   addRatings(data, ratings, "Josh");
 
-  return ratings;
+  return dramatizeGraphData(ratings);
 }
 
 const starWarsChartConfig: ChartConfig = {
@@ -99,36 +108,150 @@ const starWarsChartConfig: ChartConfig = {
   },
 };
 
-// function getMovieYear(searchValue: any) {
-//   // Iterate over each franchise in the imported data.
-//   for (const franchiseKey in MoviesData) {
-//     // Get the array of movies for the current franchise.
-//     const movies = MoviesData[franchiseKey].Movies;
+function getMovieYear(searchValue: any) {
+  // Iterate over each franchise in the imported data.
+  for (const franchiseKey in MoviesData) {
+    // Get the array of movies for the current franchise.
 
-//     // Search the movies array for a matching title.
-//     const foundMovie = movies.find(
-//       (movie) => movie.MovieTitle.toLowerCase() === searchValue.toLowerCase()
-//     );
+    const movies = MoviesData[franchiseKey as FranchiseName].Movies;
 
-//     // If a movie is found, return its year.
-//     if (foundMovie) {
-//       return foundMovie.Year;
-//     }
-//   }
-// }
+    // Search the movies array for a matching title.
+    const foundMovie = movies.find(
+      (movie) => movie.MovieTitle.toLowerCase() === searchValue.toLowerCase()
+    );
 
-// function GraphLabelFormatter(value: string | number | Date) {
-//   return getMovieYear(value) + ` - ${value}`;
-// }
+    // If a movie is found, return its year.
+    if (foundMovie) {
+      return foundMovie.Year;
+    }
+  }
+}
 
-export default function AreaChartCard({ graphtype, }: {
+function GraphLabelFormatter(value: string | number | Date) {
+  if (!value) return "";
+  const year = getMovieYear(value);
+  if (year === undefined) return "";
+  return year + ` - ${value}`;
+}
+
+function dramatizeGraphData(data: FranchiseInterface["Movies"]) {
+  let interval = 30;
+
+  let extraDataPoints: FranchiseInterface["Movies"] = [];
+  for (let i = 0; i < data.length - 1; i++) {
+    for (let j = 0; j < interval; j++) {
+      let ryanDiff = data[i + 1]["Ryan"] - data[i]["Ryan"];
+      let lowerBoundJoshValue = data[i]["Josh"];
+      let upperBoundJoshValue = data[i + 1]["Josh"];
+      let joshDiff = upperBoundJoshValue - lowerBoundJoshValue;
+      let interpolatedYear =
+        data[i]["Year"] +
+        ((data[i + 1]["Year"] - data[i]["Year"]) / interval) * (j + 1);
+
+      let interpolatedRyanValue =
+        data[i]["Ryan"] +
+        (ryanDiff / interval) * (j + 1) +
+        Math.random() * (Math.abs(ryanDiff) * 2 - Math.abs(ryanDiff)) * 0.5;
+
+      let interpolatedJoshValue =
+        data[i]["Josh"] +
+        (joshDiff / interval) * (j + 1) +
+        Math.random() * (Math.abs(joshDiff) * 2 - Math.abs(joshDiff)) * 0.5;
+
+      extraDataPoints.push({
+        Year: interpolatedYear,
+        Ryan: interpolatedRyanValue,
+        Josh: interpolatedJoshValue,
+        RyanMult: 0,
+        JoshMult: 0,
+      });
+    }
+  }
+  data = data.concat(extraDataPoints);
+  data.sort((a, b) => a.Year - b.Year);
+  return data;
+}
+
+export default function AreaChartCard({
+  graphtype,
+}: {
   graphtype?: FranchiseName;
 }) {
   const graphType: FranchiseName = (graphtype ?? "StarWars") as FranchiseName;
   const data = MoviesData[graphType];
-  console.log("Wassup");
 
-  console.log(data);
+  // client-side memoized chart data (includes interpolated points)
+  const chartData = useMemo(() => calculateRatings(data.Movies), [graphType]);
+  // currently highlighted real datapoint (MovieTitle present)
+  const [highlight, setHighlight] = useState<
+    FranchiseInterface["Movies"][number] | null
+  >(null);
+
+  function findNearestWithTitle(year: number | undefined) {
+    if (year == null) return null;
+    let nearest = null;
+    let bestDiff = Number.POSITIVE_INFINITY;
+    for (const d of chartData) {
+      if (!d || !d.MovieTitle) continue;
+      const diff = Math.abs(d.Year - year);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        nearest = d;
+      }
+    }
+    return nearest;
+  }
+
+  function CustomTooltip(props: any) {
+    const { active, payload, label } = props;
+    if (!active) return null;
+    const dataPoint = payload?.[0]?.payload;
+    // if hovered point has a MovieTitle, render as before
+    if (dataPoint?.MovieTitle) {
+      return (
+        <ChartTooltipContent
+          {...props}
+          labelFormatter={GraphLabelFormatter}
+          indicator="dot"
+        />
+      );
+    }
+
+    // fallback: find the nearest real movie datapoint and render tooltip for that
+    const nearest = highlight ?? findNearestWithTitle(dataPoint?.Year);
+    if (!nearest) return null;
+    const fakePayload = [{ payload: nearest }];
+    const newProps = {
+      ...props,
+      payload: fakePayload,
+      label: nearest.MovieTitle ?? label,
+    };
+    return (
+      <ChartTooltipContent
+        {...newProps}
+        labelFormatter={GraphLabelFormatter}
+        indicator="dot"
+      />
+    );
+  }
+
+  function CustomActiveDot(props: any & { color?: string }) {
+    const { cx, cy, payload, color = "var(--color-chart-1)" } = props;
+    if (!payload || !payload.MovieTitle || cx == null || cy == null)
+      return null;
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={4}
+        fill={color}
+        stroke="#fff"
+        strokeWidth={1.5}
+        pointerEvents="none"
+      />
+    );
+  }
+
   return (
     <Card className="relative flex-1 card basis-2/5">
       <div className="absolute inset-0 bg-white opacity-10 rounded-[10px]"></div>
@@ -143,7 +266,24 @@ export default function AreaChartCard({ graphtype, }: {
           config={starWarsChartConfig}
           className="aspect-auto h-[250px] w-full"
         >
-          <AreaChart data={calculateRatings(data.Movies)}>
+          <AreaChart
+            data={chartData}
+            onMouseMove={(state: any) => {
+              const payload = state?.activePayload?.[0]?.payload;
+              if (!payload) {
+                setHighlight(null);
+                return;
+              }
+              if (payload.MovieTitle) {
+                setHighlight(payload);
+                return;
+              }
+              // hovered an interpolated point - pick nearest real datapoint
+              const nearest = findNearestWithTitle(payload.Year);
+              setHighlight(nearest);
+            }}
+            onMouseLeave={() => setHighlight(null)}
+          >
             <defs>
               <linearGradient id="fillRyan" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -175,9 +315,9 @@ export default function AreaChartCard({ graphtype, }: {
             <ChartTooltip
               cursor={false}
               content={
-                <ChartTooltipContent
-                  // labelFormatter={GraphLabelFormatter}
-                  indicator="dot"
+                <CustomTooltip
+                // labelFormatter={GraphLabelFormatter}
+                // indicator="dot"
                 />
               }
             />
@@ -188,6 +328,7 @@ export default function AreaChartCard({ graphtype, }: {
               stroke="var(--color-chart-2)"
               stackId="a"
               connectNulls={true}
+              activeDot={<CustomActiveDot color="var(--color-chart-2)" />}
             />
             <Area
               dataKey="Ryan"
@@ -195,7 +336,26 @@ export default function AreaChartCard({ graphtype, }: {
               fill="url(#fillRyan)"
               stroke="var(--color-chart-1)"
               stackId="b"
+              activeDot={<CustomActiveDot color="var(--color-chart-1)" />}
             />
+            {highlight ? (
+              <>
+                <ReferenceDot
+                  x={highlight.MovieTitle}
+                  y={highlight.Josh}
+                  r={4}
+                  fill="var(--color-chart-2)"
+                  stroke="#fff"
+                />
+                <ReferenceDot
+                  x={highlight.MovieTitle}
+                  y={highlight.Ryan}
+                  r={4}
+                  fill="var(--color-chart-1)"
+                  stroke="#fff"
+                />
+              </>
+            ) : null}
             {/* <Area
               dataKey="Avg"
               type="natural"
