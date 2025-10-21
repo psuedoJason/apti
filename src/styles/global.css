@@ -121,3 +121,9 @@
   padding: 0.5rem;
   flex: 1;
 }
+
+.card {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  border: 0px!important;
+}

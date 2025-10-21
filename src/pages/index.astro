@@ -4,20 +4,26 @@ import Footer from '../components/Footer.astro';
 import Sidebar from '../components/Sidebar.astro';
 import AreaChartCard from '../components/AreaChartCard.tsx';
 import MainLayout from '../layouts/MainLayout.astro';
+import MoviesData from "@/data/GraphData.json";
+type FranchiseName = keyof typeof MoviesData;
+const starwars: FranchiseName = "StarWars";
+const jurassic: FranchiseName = "Jurassic";
 
 import "../styles/global.css";
-const someProps = {
-	count: 0,
-};
 ---
 <script src="../scripts/theme.ts" is:inline></script>
 
 <MainLayout>
   <Header slot="header" />
   <Sidebar slot="sidebar" />
-  <div slot="content" class="p-4">
+  <div slot="content" class="p-8">
     <h2 class="text-on-background text-2xl mb-4">Welcome to the main content!</h2>
-    <AreaChartCard client:load />
+    <span class="relative flex flex-1 flex-wrap gap-4">  
+      <AreaChartCard client:load graphtype={starwars} />
+      <AreaChartCard client:load graphtype={jurassic}/>
+      <AreaChartCard client:load />
+    </span>
+
   </div>
   <Footer slot="footer" />
 </MainLayout>

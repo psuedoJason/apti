@@ -1,0 +1,167 @@
+{
+  "StarWars": {
+    "GraphTitle": "Star Wars Ratings",
+    "Description": "by Ryan and Josh",
+    "Movies": [
+      {
+        "Year": 1977,
+        "MovieTitle": "A New Hope",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 7,
+        "JoshMult": 0,
+        "Avg": 8.5
+      },
+      {
+        "Year": 1980,
+        "MovieTitle": "Empire Strikes Back",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 8,
+        "JoshMult": 0,
+        "Avg": 9
+      },
+      {
+        "Year": 1983,
+        "MovieTitle": "Return of the Jedi",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 8,
+        "JoshMult": 0,
+        "Avg": 9
+      },
+      {
+        "Year": 1999,
+        "MovieTitle": "The Phantom Menace",
+        "Ryan": 9,
+        "RyanMult": 0,
+        "Josh": 10,
+        "JoshMult": 0,
+        "Avg": 9.5
+      },
+      {
+        "Year": 2002,
+        "MovieTitle": "Attack of the Clones",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 10,
+        "JoshMult": 0,
+        "Avg": 10
+      },
+      {
+        "Year": 2005,
+        "MovieTitle": "Revenge of the Sith",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 10,
+        "JoshMult": 0,
+        "Avg": 10
+      },
+      {
+        "Year": 2015,
+        "MovieTitle": "The Force Awakens",
+        "Ryan": 7,
+        "RyanMult": 0,
+        "Josh": 7,
+        "JoshMult": 0,
+        "Avg": 7
+      },
+      {
+        "Year": 2016,
+        "MovieTitle": "Rogue One",
+        "Ryan": 8,
+        "RyanMult": 0,
+        "Josh": 7,
+        "JoshMult": 0,
+        "Avg": 7.5
+      },
+      {
+        "Year": 2017,
+        "MovieTitle": "The Last Jedi",
+        "Ryan": 1,
+        "RyanMult": 0,
+        "Josh": 3,
+        "JoshMult": 0,
+        "Avg": 2
+      },
+      {
+        "Year": 2018,
+        "MovieTitle": "Solo",
+        "Ryan": 3,
+        "RyanMult": 0,
+        "Josh": 4,
+        "JoshMult": 0,
+        "Avg": 3.5
+      },
+      {
+        "Year": 2019,
+        "MovieTitle": "The Rise of Skywalker",
+        "Ryan": 7,
+        "RyanMult": 0,
+        "Josh": 8,
+        "JoshMult": 0,
+        "Avg": 7.5
+      }
+    ]
+  },
+  "Jurassic": {
+    "GraphTitle": "Jurassic Ratings",
+    "Description": "by Ryan and Josh",
+    "Movies": [
+      {
+        "Year": 1993,
+        "MovieTitle": "Jurassic Park",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 7,
+        "JoshMult": 0,
+        "Avg": 8.5
+      },
+      {
+        "Year": 1997,
+        "MovieTitle": "The Lost World: Jurassic Park",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 8,
+        "JoshMult": 0,
+        "Avg": 9
+      },
+      {
+        "Year": 2001,
+        "MovieTitle": "Jurassic Park III",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 8,
+        "JoshMult": 0,
+        "Avg": 9
+      },
+      {
+        "Year": 2015,
+        "MovieTitle": "Jurassic World",
+        "Ryan": 9,
+        "RyanMult": 0,
+        "Josh": 10,
+        "JoshMult": 0,
+        "Avg": 9.5
+      },
+      {
+        "Year": 2018,
+        "MovieTitle": "Jurassic World: Fallen Kingdom",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 10,
+        "JoshMult": 0,
+        "Avg": 10
+      },
+      {
+        "Year": 2022,
+        "MovieTitle": "Jurassic World: Dominion",
+        "Ryan": 10,
+        "RyanMult": 0,
+        "Josh": 10,
+        "JoshMult": 0,
+        "Avg": 10
+      }
+    ]
+  }
+}
